@@ -7,32 +7,25 @@ on:
     branches: [ main ]
 
 jobs:
-
-  lint:
+  build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.9]
-
+        python-version: ['3.9']
+    name: Python ${{ matrix.python-version }} sample
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v1
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with: 
+      - uses: actions/checkout@v2
+      - name: Setup python
+        uses: actions/setup-python@v2
+        with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
-        run: 
+          architecture: x64
+      - run:
           python3 -m venv venv 
           . ./venv/bin/activate
           python3 -m pip install --upgrade pip
           pip3 install -r requirements.txt
           uvicorn main:app --reload
       - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - run: echo Hello, world!
